@@ -6,7 +6,7 @@ This guide takes a new Render account from the repository Blueprint to the first
 
 Use the repository's deploy button:
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/tecxbro/iMessage-agent-render)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/photon-hq/render-imessage-template)
 
 Before approving the Blueprint, confirm it creates exactly:
 

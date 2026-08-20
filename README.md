@@ -2,7 +2,7 @@
 
 Deploy a private iMessage agent powered by Photon Spectrum, Codex, PostgreSQL, and optional Supermemory.
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/tecxbro/iMessage-agent-render)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/photon-hq/render-imessage-template)
 
 > This provisions a paid Render Web Service, a Render PostgreSQL database, and a persistent disk. The deployed web URL opens the setup dashboard. You talk to the agent through iMessage.
 

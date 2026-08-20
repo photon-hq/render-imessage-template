@@ -171,7 +171,7 @@ function deployButtonFailures() {
   if (button === -1 || firstSection === -1 || button > firstSection) {
     return ["README.md must place the Deploy to Render button before the first H2 section"];
   }
-  if (!readme.includes("https://render.com/deploy?repo=https://github.com/tecxbro/iMessage-agent-render")) {
+  if (!readme.includes("https://render.com/deploy?repo=https://github.com/photon-hq/render-imessage-template")) {
     return ["README.md deploy button must explicitly identify the source repository"];
   }
   return [];

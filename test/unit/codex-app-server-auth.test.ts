@@ -138,7 +138,7 @@ async function temporaryCodexHome(): Promise<string> {
 }
 
 describe("Codex App Server ChatGPT authentication", () => {
-  it("performs the pinned App Server handshake and exposes only the device ceremony", async () => {
+  it("waits for the pinned App Server account update before completing device login", async () => {
     const codexHome = await temporaryCodexHome();
     const connection = new FakeConnection(codexHome);
     const connected = vi.fn();
@@ -180,12 +180,26 @@ describe("Codex App Server ChatGPT authentication", () => {
     });
 
     await writeFile(join(codexHome, "auth.json"), "fixture", { mode: 0o600 });
-    connection.connected = true;
     connection.emit("account/login/completed", {
       loginId: "3ea32ef5-f9b0-4d0e-b59c-d9838db91f92",
       success: true,
       error: null,
       onboardingEntrypoint: null,
+    });
+    await vi.waitFor(() =>
+      expect(
+        connection.requests.filter(
+          (request) => request.method === "account/read",
+        ),
+      ).toHaveLength(2),
+    );
+    expect(auth.status()).toMatchObject({ state: "awaiting_authorization" });
+    expect(connected).not.toHaveBeenCalled();
+
+    connection.connected = true;
+    connection.emit("account/updated", {
+      authMode: "chatgpt",
+      planType: "plus",
     });
     await vi.waitFor(() => expect(auth.status()).toEqual({ state: "connected" }));
     expect(connected).toHaveBeenCalledOnce();
@@ -194,6 +208,19 @@ describe("Codex App Server ChatGPT authentication", () => {
       planType: "plus",
       models: [{ id: "gpt-5.6-luna" }],
     });
+
+    connection.emit("account/updated", {
+      authMode: "chatgpt",
+      planType: "plus",
+    });
+    await vi.waitFor(() =>
+      expect(
+        connection.requests.filter(
+          (request) => request.method === "account/read",
+        ),
+      ).toHaveLength(4),
+    );
+    expect(connected).toHaveBeenCalledOnce();
     await auth.close();
     expect(connection.closed).toBe(true);
   });

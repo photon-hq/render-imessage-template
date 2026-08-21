@@ -311,12 +311,8 @@ export class ChatGptAuthStateMachine implements ChatGptSetupController {
         this.#status = { state: "not_connected" };
       }
       await this.refreshCapabilities();
-      if (
-        this.#accountState === "connected" &&
-        this.#status.state !== "starting" &&
-        this.#status.state !== "awaiting_authorization"
-      ) {
-        this.#status = { state: "connected" };
+      if (this.#accountState === "connected") {
+        await this.#transitionToConnected();
       }
       return;
     }
@@ -364,10 +360,25 @@ export class ChatGptAuthStateMachine implements ChatGptSetupController {
     try {
       await this.refreshCapabilities();
       if (this.#accountState !== "connected") {
-        this.#loginId = undefined;
-        this.#status = { state: "failed", code: "CHATGPT_LOGIN_FAILED" };
+        // App Server emits login completion before reloading its account.
+        // Keep waiting for the authoritative account/updated notification.
         return;
       }
+      await this.#transitionToConnected();
+    } catch {
+      this.#loginId = undefined;
+      this.#status = {
+        state: "failed",
+        code: "CHATGPT_CREDENTIAL_SAVE_FAILED",
+      };
+    }
+  }
+
+  async #transitionToConnected(): Promise<void> {
+    if (this.#status.state === "connected") {
+      return;
+    }
+    try {
       await validateAndRestrictCodexAuthFile(this.#codexHome);
     } catch {
       this.#loginId = undefined;

@@ -236,4 +236,4 @@ A blank Render disk has no code-owned execution workspace capability. The defaul
 - [Security and privacy](./docs/SECURITY_AND_PRIVACY.md)
 - [Maintainer references](./docs/maintainers/PROVIDER_REFERENCES.md)
 - [Contributing](./CONTRIBUTING.md)
-- [MIT license](./LICENSE)
+- [Apache-2.0 license](./LICENSE)
